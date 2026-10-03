@@ -1,0 +1,18 @@
+const pool = require('./db');
+
+async function checkColumns() {
+  try {
+    const res = await pool.query(`
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name = 'products';
+    `);
+    console.log('📋 Products Table Columns:', res.rows.map(r => r.column_name));
+  } catch (err) {
+    console.error(err);
+  } finally {
+    pool.end();
+  }
+}
+
+checkColumns();

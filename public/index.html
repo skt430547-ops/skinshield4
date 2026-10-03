@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinShield - Verification</title>
+    <!-- QR Code Scanner Library[span_0](start_span)[span_0](end_span) -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        /* Basic Styling (Tor UI er moto kore nish) */
+        body { font-family: sans-serif; background: #1e293b; color: white; display: flex; justify-content: center; padding: 50px; }
+        .card { background: #334155; padding: 20px; border-radius: 10px; width: 400px; text-align: center; }
+        .btn-scan { background: #10b981; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 15px; font-weight: bold; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        input { flex: 1; padding: 10px; border-radius: 5px; border: none; }
+        .btn-verify { background: #06b6d4; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        
+        /* Result Box Styling */
+        .result-box { display: none; padding: 15px; border-radius: 5px; text-align: left; margin-top: 15px; }
+        .real-box { border: 2px solid #10b981; background: rgba(16, 185, 129, 0.1); }
+        .fake-box { border: 2px solid #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .badge-real { background: #10b981; color: white; padding: 3px 8px; border-radius: 5px; font-size: 12px; }
+        .badge-fake { background: #ef4444; color: white; padding: 3px 8px; border-radius: 5px; font-size: 12px; }
+        
+        #reader { width: 100%; margin-bottom: 15px; display: none; background: white; color: black; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>🛡️ SkinShield</h2>
+    <p>Verify Cosmetics & Skincare Authenticity</p>
+
+    <!-- QR/Barcode Scanner Div -->
+    <div id="reader"></div>
+
+    <!-- Scan Button -->
+    <button class="btn-scan" onclick="startQRScanner()">📸 Scan Product QR/Barcode</button>
+
+    <!-- Manual Input -->
+    <div class="input-group">
+        <input type="text" id="codeInput" placeholder="Enter Serial Code (e.g. SKIN101)">
+        <button class="btn-verify" onclick="verifyProduct()">Verify</button>
+    </div>
+
+    <!-- Result Display Box -->
+    <div id="resultBox" class="result-box">
+        <span id="statusBadge"></span>
+        <p><strong>Product Name:</strong> <span id="pName"></span></p>
+        <p><strong>Brand:</strong> <span id="pBrand"></span></p>
+        <p><strong>Serial Code:</strong> <span id="pCode"></span></p>
+        <p id="statusMessage" style="font-weight: bold; margin-top: 10px;"></p>
+    </div>
+</div>
+
+<script>
+    // 1. API Verification Logic
+    async function verifyProduct(scannedCode = null) {
+        // Tui jodi scan koris, tahole scannedCode ashbe, noile input box-er text nebe
+        const code = scannedCode || document.getElementById('codeInput').value;
+        const resultBox = document.getElementById('resultBox');
+        
+        if (!code) {
+            alert("Dada, age code din ba scan korun!");
+            return;
+        }
+
+        try {
+            // Tor backend API call
+            const response = await fetch(`http://localhost:5000/api/verify/${code}`);
+            const data = await response.json();
+
+            // Box-ta visible korlam
+            resultBox.style.display = "block";
+
+            // DATA CHECK LOGIC (Ei khane "is_authentic" check kora hocche jate SKIN101 fail na hoy)[span_1](start_span)[span_1](end_span)[span_2](start_span)[span_2](end_span)
+            const isReal = data.is_authentic === true || (data.product && data.product.is_authentic === true);
+            
+            // Name ar Brand set kora
+            const productName = data.name || (data.product ? data.product.name : "Unknown");
+            const productBrand = data.brand || (data.product ? data.product.brand : "Unknown");
+
+            document.getElementById('pName').innerText = productName;
+            document.getElementById('pBrand').innerText = productBrand;
+            document.getElementById('pCode').innerText = code;
+
+            if (isReal) {
+                // REAL PRODUCT UI Update
+                resultBox.className = "result-box real-box";
+                document.getElementById('statusBadge').className = "badge-real";
+                document.getElementById('statusBadge').innerText = "DOCTOR APPROVED";
+                document.getElementById('statusMessage').innerText = "✅ This product is authentic and safe to use.";
+                document.getElementById('statusMessage').style.color = "#10b981";
+            } else {
+                // FAKE PRODUCT UI Update
+                resultBox.className = "result-box fake-box";
+                document.getElementById('statusBadge').className = "badge-fake";
+                document.getElementById('statusBadge').innerText = "COUNTERFEIT WARNING";
+                document.getElementById('statusMessage').innerText = "⚠️ Warning: This is a fake product! Do not use on skin.";
+                document.getElementById('statusMessage').style.color = "#ef4444";
+            }
+
+        } catch (error) {
+            console.error("API Error:", error);
+            alert("Backend server er sathe connect kora jacche na. Backend ki chalu ache?");
+        }
+    }
+
+    // 2. QR/Barcode Scanner Logic[span_3](start_span)[span_3](end_span)
+    function startQRScanner() {
+        const readerDiv = document.getElementById('reader');
+        readerDiv.style.display = "block"; // Scanner UI show kora
+
+        // html5-qrcode scanner initialize kora[span_4](start_span)[span_4](end_span)
+        const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: {width: 250, height: 250} }, false);
+
+        html5QrcodeScanner.render((decodedText) => {
+            console.log("Scanned Code:", decodedText);
+            
+            // Scanner theke code peye input box-e bosano
+            document.getElementById('codeInput').value = decodedText;
+            
+            // Scan hoye gele camera bondho kora
+            html5QrcodeScanner.clear();
+            readerDiv.style.display = "none";
+            
+            // Automatic verify function run kora
+            verifyProduct(decodedText);
+            
+        }, (errorMessage) => {
+            // Background scanning errors ignore korbe
+        });
+    }
+</script>
+
+</body>
+</html>
