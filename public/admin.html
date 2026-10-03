@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f6f7f2">
+  <title>Admin approval records — SkinShield</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20332b;
+      --muted: #6b7971;
+      --green: #315f47;
+      --pale: #eff4ed;
+      --line: #e4e8df;
+      --canvas: #f6f7f2;
+    }
+    * { box-sizing: border-box; }
+    body { min-height: 100vh; margin: 0; padding: 28px 16px; color: var(--ink); background: var(--canvas); font: 15px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+    main { width: min(100%, 700px); margin: 0 auto; }
+    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 21px; font-weight: 800; }
+    .mark { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 13px; color: white; background: var(--green); font-size: 20px; }
+    .card { padding: clamp(20px, 4vw, 34px); border: 1px solid var(--line); border-radius: 20px; background: white; box-shadow: 0 12px 38px rgba(36, 72, 56, .07); }
+    h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); letter-spacing: -.8px; }
+    .intro { margin: 7px 0 22px; color: var(--muted); }
+    .warning { margin: 17px 0; padding: 13px 15px; border: 1px solid #efdfb9; border-radius: 12px; color: #715a2c; background: #fffaf0; font-size: 13px; }
+    .warning strong { display: block; margin-bottom: 3px; }
+    label { display: block; margin: 16px 0 7px; font-size: 13px; font-weight: 700; }
+    input { width: 100%; min-height: 45px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: #fff; font: inherit; }
+    input:focus { outline: 3px solid rgba(49, 95, 71, .16); border-color: var(--green); }
+    .row { display: flex; gap: 9px; align-items: end; }
+    .row .field { flex: 1; min-width: 0; }
+    button { min-height: 44px; padding: 10px 15px; border: 0; border-radius: 11px; color: white; background: var(--green); font: inherit; font-weight: 750; cursor: pointer; }
+    button:hover { background: #244b37; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    .secondary { color: var(--green); border: 1px solid var(--line); background: var(--pale); }
+    .secondary:hover { background: #e4ece1; }
+    #productSummary { display: none; margin: 15px 0; padding: 13px 15px; border: 1px solid var(--line); border-radius: 12px; background: #f8faf7; }
+    #productSummary.visible { display: block; }
+    #productSummary strong { display: block; }
+    #productSummary span { color: var(--muted); font-size: 13px; }
+    #approvalForm { display: none; margin-top: 14px; padding-top: 5px; border-top: 1px solid var(--line); }
+    #approvalForm.visible { display: block; }
+    .checkbox { display: flex; align-items: flex-start; gap: 10px; margin: 19px 0; font-size: 13px; font-weight: 500; }
+    .checkbox input { flex: 0 0 auto; width: 17px; height: 17px; min-height: auto; margin: 2px 0 0; accent-color: var(--green); }
+    .message { min-height: 22px; margin: 12px 0 0; color: var(--muted); font-size: 13px; }
+    .message.error { color: #a33e39; }
+    .message.success { color: var(--green); }
+    .back { display: inline-block; margin-top: 18px; color: var(--green); font-size: 13px; font-weight: 700; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    @media (max-width: 520px) { .row { align-items: stretch; flex-direction: column; } .row button { width: 100%; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand"><span class="mark" aria-hidden="true">✳</span> SkinShield admin</div>
+    <section class="card">
+      <h1>Record doctor approval</h1>
+      <p class="intro">Attach a real approval record to a product already in the SkinShield catalog.</p>
+      <div class="warning">
+        <strong>Admin-only · Handle records responsibly</strong>
+        Only submit certificate details that you are authorized to manage and have checked against a real doctor-issued record. SkinShield records your attestation; it does not independently validate the doctor or certificate.
+      </div>
+
+      <label for="adminKey">Admin access key</label>
+      <input id="adminKey" type="password" autocomplete="current-password" placeholder="Enter the server-configured admin key">
+
+      <div class="row">
+        <div class="field">
+          <label for="productCode">Product barcode / serial number</label>
+          <input id="productCode" type="text" maxlength="100" autocomplete="off" placeholder="Enter an existing product code" required>
+        </div>
+        <button id="loadProduct" class="secondary" type="button">Load product</button>
+      </div>
+
+      <div id="productSummary" aria-live="polite"></div>
+
+      <form id="approvalForm">
+        <label for="certificateId">Certificate reference</label>
+        <input id="certificateId" type="text" maxlength="160" required>
+
+        <label for="doctorName">Doctor name</label>
+        <input id="doctorName" type="text" maxlength="160" autocomplete="name" required>
+
+        <label for="doctorLicense">Doctor license / registration number</label>
+        <input id="doctorLicense" type="text" maxlength="160" required>
+
+        <label for="clinicName">Clinic / issuing organization (optional)</label>
+        <input id="clinicName" type="text" maxlength="160">
+
+        <label for="approvalDate">Approval date</label>
+        <input id="approvalDate" type="date" required>
+
+        <label class="checkbox">
+          <input id="attested" type="checkbox" required>
+          <span>I confirm this product's doctor approval and the details above are supported by a real doctor-issued record that I am authorized to enter.</span>
+        </label>
+        <button id="saveApproval" type="submit">Save approval record</button>
+      </form>
+      <p id="message" class="message" aria-live="polite"></p>
+    </section>
+    <a class="back" href="/">← Back to SkinShield</a>
+  </main>
+
+  <script>
+    let adminKeyInMemory = '';
+    const byId = (id) => document.getElementById(id);
+
+    async function adminRequest(url, options = {}) {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          ...(options.headers || {}),
+          Authorization: `Bearer ${adminKeyInMemory}`
+        }
+      });
+      const text = await response.text();
+      let data = {};
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error(`Server returned HTTP ${response.status} with an invalid response.`);
+        }
+      }
+      if (!response.ok) throw new Error(data.error || `Request failed (HTTP ${response.status}).`);
+      return data;
+    }
+
+    function setMessage(text, type = '') {
+      byId('message').textContent = text;
+      byId('message').className = `message ${type}`;
+    }
+
+    byId('loadProduct').addEventListener('click', async () => {
+      const code = byId('productCode').value.trim();
+      const summary = byId('productSummary');
+      byId('approvalForm').classList.remove('visible');
+      summary.classList.remove('visible');
+      if (!code) {
+        setMessage('Enter a product barcode or serial number.');
+        return;
+      }
+      adminKeyInMemory = byId('adminKey').value;
+      byId('loadProduct').disabled = true;
+      setMessage('Checking admin access and loading product…');
+      try {
+        const result = await adminRequest(`/api/admin/products/${encodeURIComponent(code)}`);
+        const product = result.product;
+        summary.innerHTML = `<strong>${escapeHtml(product.product_name)}</strong><span>${escapeHtml(product.brand)} · ${escapeHtml(product.serial_number)}</span>`;
+        summary.classList.add('visible');
+        byId('certificateId').value = product.certificate_id || '';
+        byId('doctorName').value = product.doctor_name || '';
+        byId('doctorLicense').value = product.doctor_license || '';
+        byId('clinicName').value = product.clinic_name || '';
+        byId('approvalDate').value = product.approval_date ? String(product.approval_date).slice(0, 10) : '';
+        byId('attested').checked = false;
+        byId('approvalForm').classList.add('visible');
+        setMessage(product.is_doctor_approved ? 'Existing approval record loaded. Saving will update it.' : 'Product found. Enter details from the real approval document.');
+      } catch (error) {
+        setMessage(error.message, 'error');
+      } finally {
+        byId('loadProduct').disabled = false;
+      }
+    });
+
+    byId('approvalForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!byId('approvalForm').reportValidity()) return;
+      byId('saveApproval').disabled = true;
+      setMessage('Saving approval record…');
+      try {
+        const code = byId('productCode').value.trim();
+        const result = await adminRequest(
+          `/api/admin/products/${encodeURIComponent(code)}/doctor-approval`,
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              certificateId: byId('certificateId').value.trim(),
+              doctorName: byId('doctorName').value.trim(),
+              doctorLicense: byId('doctorLicense').value.trim(),
+              clinicName: byId('clinicName').value.trim(),
+              approvalDate: byId('approvalDate').value,
+              attested: byId('attested').checked
+            })
+          }
+        );
+        setMessage(result.notice, 'success');
+      } catch (error) {
+        setMessage(error.message, 'error');
+      } finally {
+        byId('saveApproval').disabled = false;
+      }
+    });
+
+    byId('adminKey').addEventListener('input', () => {
+      adminKeyInMemory = '';
+    });
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+    }
+  </script>
+</body>
+</html>

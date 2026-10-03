@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 330" role="img" aria-labelledby="title">
+  <title id="title">Illustration of a face moisturizer jar</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#f6eadc"/>
+      <stop offset="1" stop-color="#ead4bd"/>
+    </linearGradient>
+    <linearGradient id="jar" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fffdf9"/>
+      <stop offset="1" stop-color="#f0e6d8"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="330" rx="28" fill="url(#bg)"/>
+  <circle cx="93" cy="74" r="75" fill="#fff" opacity=".28"/>
+  <path d="M46 275c70-35 110-34 175-11 71 25 151 7 213-23v89H46z" fill="#d1ad8d" opacity=".42"/>
+  <ellipse cx="240" cy="277" rx="108" ry="15" fill="#8a684d" opacity=".16"/>
+  <rect x="157" y="126" width="166" height="29" rx="11" fill="#c99465"/>
+  <path d="M169 150h142v91c0 15-12 27-27 27h-88c-15 0-27-12-27-27z" fill="url(#jar)" stroke="#dfcdb9" stroke-width="3"/>
+  <rect x="175" y="159" width="130" height="92" rx="16" fill="#fff" opacity=".43"/>
+  <path d="M195 194c17-23 45-28 67-7-19 0-31 9-38 26-9-7-18-13-29-19z" fill="#d9b17d"/>
+  <text x="240" y="226" fill="#71553b" font-family="Arial,sans-serif" font-size="12" font-weight="700" text-anchor="middle">DAILY MOISTURE</text>
+  <path d="M358 113c13-14 26-14 39 0-13 14-26 14-39 0z" fill="#fff" opacity=".65"/>
+  <circle cx="373" cy="113" r="4" fill="#d8b18b"/>
+</svg>

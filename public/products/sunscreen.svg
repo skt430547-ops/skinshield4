@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 330" role="img" aria-labelledby="title">
+  <title id="title">Illustration of a sunscreen tube</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fff2cf"/>
+      <stop offset="1" stop-color="#f3dca1"/>
+    </linearGradient>
+    <linearGradient id="tube" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#fff8e8"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="330" rx="28" fill="url(#bg)"/>
+  <circle cx="359" cy="80" r="57" fill="#f5c550" opacity=".8"/>
+  <g stroke="#f0bf46" stroke-width="4" stroke-linecap="round">
+    <path d="M359 5v-17m0 184v-17M284 80h-17m184 0h-17M306 27l-12-12m130 130-12-12m0-106 12-12M294 145l12-12"/>
+  </g>
+  <path d="M56 272c70-41 117-34 175-10 77 31 138 11 193-18v86H56z" fill="#dbbe7c" opacity=".45"/>
+  <ellipse cx="225" cy="281" rx="76" ry="12" fill="#8c743d" opacity=".15"/>
+  <path d="M188 83h75l18 158c2 15-8 27-23 27h-61c-15 0-25-12-23-27z" fill="url(#tube)" stroke="#dccd9f" stroke-width="3"/>
+  <path d="M186 83h79l-4 24h-72z" fill="#e9c862"/>
+  <path d="M202 267h47v16c0 6-5 10-10 10h-27c-6 0-10-5-10-10z" fill="#397b5a"/>
+  <circle cx="225" cy="157" r="25" fill="#fff1c8"/>
+  <path d="M225 141v32m-16-16h32m-27-11 23 23m0-23-23 23" stroke="#d49d2f" stroke-width="2" stroke-linecap="round"/>
+  <text x="225" y="205" fill="#315d46" font-family="Arial,sans-serif" font-size="13" font-weight="700" text-anchor="middle">SUN CARE</text>
+  <text x="225" y="221" fill="#7a795f" font-family="Arial,sans-serif" font-size="9" letter-spacing="1" text-anchor="middle">BROAD SPECTRUM</text>
+</svg>

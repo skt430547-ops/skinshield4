@@ -1,25 +1,16 @@
+const { initializeDatabase } = require('./database');
 const pool = require('./db');
 
-const createTables = async () => {
-  const queryText = `
-    CREATE TABLE IF NOT EXISTS products (
-      id SERIAL PRIMARY KEY,
-      product_name VARCHAR(100) NOT NULL,
-      brand VARCHAR(100) NOT NULL,
-      serial_number VARCHAR(100) UNIQUE NOT NULL,
-      is_authentic BOOLEAN DEFAULT TRUE,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `;
-
+async function createTables() {
   try {
-    await pool.query(queryText);
-    console.log('Products table created successfully!');
+    await initializeDatabase();
+    console.log('Database tables and columns are ready.');
   } catch (err) {
-    console.error('Error creating table:', err.stack);
+    console.error('Database initialization failed:', err.message);
+    process.exitCode = 1;
   } finally {
-    pool.end();
+    await pool.end();
   }
-};
+}
 
 createTables();

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 330" role="img" aria-labelledby="title">
+  <title id="title">Illustration of a lip balm tube</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#f7e5eb"/>
+      <stop offset="1" stop-color="#ebcbd5"/>
+    </linearGradient>
+    <linearGradient id="tube" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#f8edf0"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="330" rx="28" fill="url(#bg)"/>
+  <circle cx="98" cy="88" r="75" fill="#fff" opacity=".34"/>
+  <path d="M46 281c81-41 136-35 192-11 66 28 127 12 196-22v82H46z" fill="#d4a5b4" opacity=".42"/>
+  <ellipse cx="240" cy="278" rx="63" ry="11" fill="#815969" opacity=".17"/>
+  <rect x="202" y="103" width="76" height="160" rx="19" fill="url(#tube)" stroke="#d7bac4" stroke-width="3"/>
+  <path d="M202 120c0-10 8-18 18-18h40c10 0 18 8 18 18v24h-76z" fill="#d892aa"/>
+  <rect x="207" y="239" width="66" height="34" rx="10" fill="#b96986"/>
+  <path d="M226 181c9-9 19-9 28 0-9 10-19 10-28 0z" fill="#e2a4b8"/>
+  <text x="240" y="209" fill="#74475b" font-family="Arial,sans-serif" font-size="11" font-weight="700" text-anchor="middle">LIP CARE</text>
+  <path d="M331 145c10-12 21-12 31 0-10 12-21 12-31 0zm-213 31c8-9 17-9 25 0-8 9-17 9-25 0z" fill="#fff" opacity=".72"/>
+  <circle cx="360" cy="76" r="4" fill="#fff" opacity=".9"/>
+  <circle cx="132" cy="111" r="3" fill="#fff" opacity=".8"/>
+</svg>
